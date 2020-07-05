@@ -40,6 +40,10 @@ with DAG("kauai_data", default_args=default_args) as dag:
         task_id="tGetJobCounts", python_callable=get_kauai_jobs
     )
 
+    tUnpivotJobs = PythonOperator(
+        task_id="tUnpivotJobs", python_callable=unpivot_kauai_jobs
+    )
+
     tCallSpark = SparkSubmitOperator(
         application="${SPARK_HOME}/examples/src/main/python/pi.py",
         task_id="submit_spark_job"
@@ -49,4 +53,4 @@ with DAG("kauai_data", default_args=default_args) as dag:
         task_id="write_questions_to_s3", python_callable=write_questions_to_s3
     )
 
-tGetVisitorCounts >> tGetJobCounts >> tCallSpark >> tWriteResults
+tGetVisitorCounts >> tGetJobCounts >> tUnpivotJobs >> tCallSpark >> tWriteResults

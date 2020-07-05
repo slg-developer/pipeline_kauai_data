@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# added by Ranjeet
+debug.py
+kauai_jobs.xls
+kauai_jobs_data.csv
