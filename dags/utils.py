@@ -13,14 +13,17 @@ from airflow.models import Variable
 from jinja2 import Environment, FileSystemLoader
 
 #url for the csv file of kauai visitor data
-KAUAI_VISITOR_URL = ''
+KAUAI_VISITOR_URL = 'https://data.uhero.hawaii.edu/#/category?id=36&data_list_id=39&sa=true&geo=HI&freq=M&view=table'
 #url for the file of Kauai county metrics.  It's in old school excel format
 KAUAI_JOBS_DATA_URL = 'http://files.hawaii.gov/dbedt/economic/data_reports/mei/2020-05-kauai.xls'
 
 
 def get_kauai_visitors():
-    # this function GETs the latest file of kauai visitor data
-    visitor_file = requests.get(KAUAI_VISITOR_URL)
+    # this file is manually uploaded to Azure Blob storage for now.
+    # Make this better in the future by scraping the table in the website
+    # and creating csv file
+    vfResponse = requests.get(KAUAI_VISITOR_URL)
+    visitor_file = vfResponse.content
 
 
 def get_kauai_jobs():
@@ -57,12 +60,3 @@ def get_kauai_jobs():
     # remove temp xls file
     os.remove(tKauaiJobs)
     os.remove(csvKauaiJobsOut)
-
-def write_questions_to_s3():
-    hook = S3Hook(aws_conn_id="s3_connection")
-    hook.load_string(
-        string_data=filter_questions(),
-        key=S3_FILE_NAME,
-        bucket_name=Variable.get("S3_BUCKET"),
-        replace=True,
-    )
