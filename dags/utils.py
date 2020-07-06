@@ -53,7 +53,7 @@ def get_kauai_jobs():
     kauai_csv.close()
     # post csv to Azure blob storage
     vWASB = WasbHook(wasb_conn_id="azure_blob")
-    container_name = "kauai_data"
+    container_name = "kauai-data-con"
     blob_name = csvKauaiJobsOut
     # file_path =”/home/xxx/xxxx.csv”
     wb.load_file(container_name, blob_name)
